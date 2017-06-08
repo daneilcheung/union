@@ -3,24 +3,37 @@ import { mount } from 'enzyme';
 import FooterNav from '../../';
 
 const assertions = [
-  ['Customer Service + FAQ', 'Customer Service + FAQ'],
-  []
+  ['xo group', 'xo group'],
+  ['About Us', 'about-us'],
+  ['Careers', 'careers'],
+  ['Investors', 'investors'],
+  ['Media', 'media'],
+  ['Advertise with Us', 'advertisers'],
+  ['thebump', 'thebump'],
+  ['GigMasters', 'gig masters'],
+  ['Privacy Policy', 'privacy policy'],
+  ['Terms of Use', 'terms of use'],
+  ['Send Feedback', 'send feedback - desktop'],
+  ['Customer Service + FAQ', 'Customer Service + FAQ']
 ];
 
-fdescribe('business-section analytics', () => {
+describe('business-section analytics', () => {
   describe('on click', () => {
-    assertions.forEach(([ text, selection ], index) => {
-      it(`makes expected analytics track calls for ${JSON.stringify(text)}`, () => {
+    assertions.forEach(([text, selection], index) => {
+      it(`makes expected analytics track call for: ${JSON.stringify(text)}`, () => {
         const spy = jasmine.createSpy('track');
-        const analyticsProps = { analytics: { track: spy }, product: 'fashion' };
+        const analyticsProps = {
+          analytics: { track: spy },
+          product: 'fashion',
+          followStrategy: false
+        };
         const subject = mount(<FooterNav analyticsProps={analyticsProps} />);
-
-        const trackableLinks = subject.find('[data-trackable],[data-trackable-selection]');
-
-        const current = trackableLinks.at(index)
+        const trackableLinks = subject.find('BusinessSection a');
+        const current = trackableLinks.at(index);
         current.simulate('click');
+        const currentText = current.text() || selection;
 
-        expect(current.text()).toBe(text)
+        expect(currentText).toBe(text);
         expect(spy).toHaveBeenCalledWith('Footer Interaction', {
           product: 'fashion',
           platform: 'web',
